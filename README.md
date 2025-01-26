@@ -14,30 +14,30 @@ L'algorithme de Lucas-Kanade repose sur deux hypothèses principales :
 ### Étapes de l'algorithme de Lucas-Kanade
 
 1. **Calcul des gradients d'intensité** :
-   L'algorithme commence par calculer les gradients d'intensité de l'image dans les directions \( x \) et \( y \) (les dérivées partielles de l'image par rapport aux coordonnées \( x \) et \( y \)). Ces gradients représentent le taux de variation de l'intensité à chaque pixel.
+   L'algorithme commence par calculer les gradients d'intensité de l'image dans les directions $\( x \)$ et $\( y \)$ (les dérivées partielles de l'image par rapport aux coordonnées $\( x \)$ et $\( y \))$. Ces gradients représentent le taux de variation de l'intensité à chaque pixel.
 
-   - Le gradient dans la direction \( x \) (\( I_x \)) et dans la direction \( y \) (\( I_y \)) sont calculés en utilisant des filtres de Sobel, ou d'autres méthodes de dérivation approximée.
+   - Le gradient dans la direction $\( x \)$ $(\( I_x \))$ et dans la direction $\( y \)$ $(\( I_y \))$ sont calculés en utilisant des filtres de Sobel, ou d'autres méthodes de dérivation approximée.
 
 2. **Calcul du terme de flux optique** :
    Pour chaque pixel, un petit voisinage de pixels est utilisé pour estimer le flux optique. L'idée est d'estimer les vitesses horizontale (\( u \)) et verticale (\( v \)) du mouvement à partir des gradients d'intensité.
 
    L'équation de base du flux optique est donnée par :
-   ```latex
-   \[
-   I_x \cdot u + I_y \cdot v + I_t = 0
-   \]
+
+
+   $I_x \cdot u + I_y \cdot v + I_t = 0$
+
    où :
-   - \( I_x \) et \( I_y \) sont les gradients spatiaux dans les directions \( x \) et \( y \),
-   - \( I_t \) est le gradient temporel, qui représente la différence d'intensité entre les deux images.
-   ```
+   - $\( I_x \)$ et $\( I_y \)$ sont les gradients spatiaux dans les directions $\( x \)$ et $\( y \)$,
+   - $\( I_t \)$ est le gradient temporel, qui représente la différence d'intensité entre les deux images.
+
 
 4. **Résolution de l'équation** :
-   L'algorithme de Lucas-Kanade résout cette équation pour un voisinage local de chaque pixel. Cela donne les composantes du mouvement \( u \) (déplacement horizontal) et \( v \) (déplacement vertical) à chaque pixel.
+   L'algorithme de Lucas-Kanade résout cette équation pour un voisinage local de chaque pixel. Cela donne les composantes du mouvement $\( u \)$ (déplacement horizontal) et $\( v \)$ (déplacement vertical) à chaque pixel.
 
    Une approche courante consiste à résoudre cette équation par une méthode de moindres carrés pour chaque pixel dans un petit voisinage (par exemple, une fenêtre de \( 3 \times 3 \)).
 
 5. **Estimation du flux optique** :
-   Le mouvement est estimé pour chaque pixel en fonction des composantes \( u \) et \( v \) calculées, et ce processus est répété pour chaque image de la séquence.
+   Le mouvement est estimé pour chaque pixel en fonction des composantes $\( u \)$ et $\( v \)$ calculées, et ce processus est répété pour chaque image de la séquence.
 
 ## Application et Utilisation
 
@@ -77,60 +77,54 @@ Le filtre de Kalman repose sur deux grandes étapes : la **prédiction** et la *
 Le filtre de Kalman modélise l'état du système et son évolution à travers les équations suivantes :
 
 #### Équation d'état :
-```latex
-\[
-x_k = A \cdot x_{k-1} + B \cdot u_k + w_k
-\]
+
+
+$x_k = A \cdot x_{k-1} + B \cdot u_k + w_k$
+
 Où :
-- \( x_k \) est l'état du système à l'instant \( k \),
-- \( A \) est la matrice de transition d'état qui décrit l'évolution de l'état entre deux instants,
-- \( B \) est la matrice d'entrée qui modélise l'impact des contrôles ou commandes \( u_k \),
-- \( w_k \) est le bruit du processus, généralement supposé être gaussien et de moyenne nulle.
-```
+- $\( x_k \)$ est l'état du système à l'instant $\( k \)$,
+- $\( A \)$ est la matrice de transition d'état qui décrit l'évolution de l'état entre deux instants,
+- $\( B \)$ est la matrice d'entrée qui modélise l'impact des contrôles ou commandes $\( u_k \)$,
+- $\( w_k \)$ est le bruit du processus, généralement supposé être gaussien et de moyenne nulle.
+
 #### Équation de mesure :
-```latex
-\[
-z_k = H \cdot x_k + v_k
-\]
+
+$z_k = H \cdot x_k + v_k$
+
 Où :
-- \( z_k \) est la mesure obtenue à l'instant \( k \),
-- \( H \) est la matrice de mesure qui décrit comment l'état est observé,
-- \( v_k \) est le bruit de mesure, également supposé être gaussien avec une moyenne nulle.
-```
+- $\( z_k \)$ est la mesure obtenue à l'instant $\( k \)$,
+- $\( H \)$ est la matrice de mesure qui décrit comment l'état est observé,
+- $\( v_k \)$ est le bruit de mesure, également supposé être gaussien avec une moyenne nulle.
+
 ### 2. **Prédiction**
 
 À chaque itération, le filtre de Kalman commence par prédire l'état du système en utilisant le modèle d'évolution (équation d'état). Il calcule également la covariance de l'estimation de l'état, qui mesure l'incertitude associée à l'estimation.
-```latex
-\[
-\hat{x}_k^- = A \cdot \hat{x}_{k-1} + B \cdot u_k
-\]
-\[
-P_k^- = A \cdot P_{k-1} \cdot A^T + Q
-\]
+
+$\hat{x}_k^- = A \cdot \hat{x}_{k-1} + B \cdot u_k$
+
+$P_k^- = A \cdot P_{k-1} \cdot A^T + Q$
+
 Où :
-- \( \hat{x}_k^- \) est l'état prédit,
-- \( P_k^- \) est la covariance de l'estimation prédite,
-- \( Q \) est la matrice de covariance du bruit de processus.
-```
+- $\( \hat{x}_k^- \)$ est l'état prédit,
+- $\( P_k^- \)$ est la covariance de l'estimation prédite,
+- $\( Q \)$ est la matrice de covariance du bruit de processus.
+
 ### 3. **Correction (Mise à jour)**
 
-Une fois la mesure \( z_k \) disponible, le filtre de Kalman met à jour l'estimation de l'état en combinant la prédiction avec la mesure. La mise à jour se fait en calculant un gain de Kalman optimal, qui détermine la manière de pondérer la prédiction et la mesure.
-```latex
-\[
-K_k = P_k^- \cdot H^T \cdot (H \cdot P_k^- \cdot H^T + R)^{-1}
-\]
-\[
-\hat{x}_k = \hat{x}_k^- + K_k \cdot (z_k - H \cdot \hat{x}_k^-)
-\]
-\[
-P_k = (I - K_k \cdot H) \cdot P_k^-
-\]
+Une fois la mesure $\( z_k \$ disponible, le filtre de Kalman met à jour l'estimation de l'état en combinant la prédiction avec la mesure. La mise à jour se fait en calculant un gain de Kalman optimal, qui détermine la manière de pondérer la prédiction et la mesure.
+
+$K_k = P_k^- \cdot H^T \cdot (H \cdot P_k^- \cdot H^T + R)^{-1}$
+
+$\hat{x}_k = \hat{x}_k^- + K_k \cdot (z_k - H \cdot \hat{x}_k^-)$
+
+$P_k = (I - K_k \cdot H) \cdot P_k^-$
+
 Où :
-- \( K_k \) est le gain de Kalman,
-- \( R \) est la matrice de covariance du bruit de mesure,
-- \( \hat{x}_k \) est l'estimation mise à jour de l'état,
-- \( P_k \) est la covariance mise à jour de l'estimation.
-```
+- $\( K_k \)$ est le gain de Kalman,
+- $\( R \)$ est la matrice de covariance du bruit de mesure,
+- $\( \hat{x}_k \)$ est l'estimation mise à jour de l'état,
+- $\( P_k \)$ est la covariance mise à jour de l'estimation.
+
 ### 4. **Récursivité**
 
 Le filtre de Kalman est récursif, ce qui signifie qu'il met constamment à jour son estimation de l'état à chaque nouvelle mesure. Cette propriété est particulièrement utile pour les systèmes en temps réel, car l'estimation peut être ajustée en continu sans avoir besoin de recalculer les états passés.
